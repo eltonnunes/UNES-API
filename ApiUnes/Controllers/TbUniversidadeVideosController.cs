@@ -12,6 +12,7 @@ namespace ApiUnes.Controllers.Dbo
     public class TbUniversidadeVideosController : ApiController
     {
         [HttpGet]
+        [AcceptVerbs("GET")]
         // GET /TB_UNIVERSIDADE_VIDEOS/token/colecao/campo/orderBy/pageSize/pageNumber?CAMPO1=VALOR&CAMPO2=VALOR
         public Retorno Get(string token, int colecao = 0, int campo = 0, int orderBy = 0, int pageSize = 0, int pageNumber = 0)
         {
@@ -61,6 +62,7 @@ namespace ApiUnes.Controllers.Dbo
             }
         }
 
+
         [HttpPut]
         [AcceptVerbs("PUT")]
         // PUT /TB_UNIVERSIDADE_VIDEOS/token/
@@ -106,7 +108,6 @@ namespace ApiUnes.Controllers.Dbo
         }
 
 
-
         [HttpDelete]
         [AcceptVerbs("DELETE")]
         // DELETE /TB_UNIVERSIDADE_VIDEOS/token/UNV_ID_VIDEOS
@@ -130,40 +131,7 @@ namespace ApiUnes.Controllers.Dbo
                 }
             }
         }
-        /*
-        // PUT /TB_UNIVERSIDADE_VIDEOS/token/
-        public void Put(string token, [FromBody]Estatisticas param)
-        {
-            // Abre nova conexão
-            using (ModelApiUnes _db = new ModelApiUnes())
-            {
-                try
-                {
-                    if (Permissoes.Autenticado(token, _db))
-                    {
-                        Estatisticas values = new Estatisticas();
-                        values.Idvideo = param.Idvideo;//Convert.ToInt32(param.Idvideo);
-                        values.Idusuario = Permissoes.GetIdUserFromToken(token);
-
-                        GatewayTbUniversidadeVideos.Update(token, values);
-
-                        TB_UNIVERSIDADE_ESTATISTICAS paramSt = new TB_UNIVERSIDADE_ESTATISTICAS();
-                        paramSt.UNV_ID_VIDEOS = values.Idvideo;
-                        paramSt.USU_ID_USUARIO = values.Idusuario;
-                        paramSt.UNE_DT_DATAVIEW = DateTime.Now;
-
-                        GatewayTbUniversidadeEstatisticas.Add(token, paramSt);
-                    }
-                    else
-                        throw new Exception("Unauthorized");
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
-                }
-            }
-        }
-        */
+        
 
     }
 }
