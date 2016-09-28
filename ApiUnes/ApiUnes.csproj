@@ -170,9 +170,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -211,12 +209,15 @@
     <Compile Include="Controllers\TbUniversidadeTokenApiController.cs" />
     <Compile Include="Controllers\TbUniversidadeVideosController.cs" />
     <Compile Include="Controllers\TbUsuarioAliasController.cs" />
+    <Compile Include="Controllers\UtilController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeEstatisticas.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeTag.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeTokenApi.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeVideos.cs" />
     <Compile Include="Gateways\GatewayTbUsuarioAlias.cs" />
+    <Compile Include="Gateways\GatewayUtils.cs" />
+    <Compile Include="Gateways\GatewayVwPessoa.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -240,6 +241,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\TemplateRecuperarSenha.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />

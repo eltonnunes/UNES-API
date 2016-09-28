@@ -20,7 +20,6 @@ namespace ApiUnes.Gateways.Dbo
         /// </summary>
         public GatewayTbUsuarioAlias()
         {
-            
         }
 
         public static string SIGLA_QUERY = "";
@@ -509,6 +508,95 @@ namespace ApiUnes.Gateways.Dbo
             {
                 throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
             }
+        }
+
+
+        public static Retorno ValidaCpfCnpjUsuario(string token, string usuario, string CpfCnpj)
+        {
+
+            ModelApiUnes _db = new ModelApiUnes();
+            _db.Configuration.ProxyCreationEnabled = false;
+            Retorno retorno = new Retorno();
+
+            List<TB_USUARIO> usuUsuario = _db.TB_USUARIO.Where(u => u.USU_TX_USUARIO.Equals(usuario))
+                                                 .Select(u => u).ToList<TB_USUARIO>();
+
+            long cpfcnpj = Convert.ToInt64(CpfCnpj);
+            List<TB_PESSOA> pesPessoa = _db.TB_PESSOA.Where(p => p.PES_NR_CPF_CNPJ == cpfcnpj)
+                                                .Select(p => p).ToList<TB_PESSOA>();
+
+            if ((usuUsuario.Count > 0) && (pesPessoa.Count > 0))
+            {
+                string dsSenha = new Random().Next(100000, 999999).ToString();
+                var str = dsSenha;
+                var alg = SHA512.Create();
+                byte[] byteArray = new byte[255];
+                byteArray = alg.ComputeHash(Encoding.UTF8.GetBytes(str));
+                var cript = BitConverter.ToString(byteArray).Replace("-", "");
+                string senhaSHA512 = cript.Substring(64) + cript.Substring(0, 64);
+
+                long userId = usuUsuario[0].USU_ID_USUARIO;
+                TB_USUARIO_ALIAS ObjUsuario = _db.TB_USUARIO_ALIAS
+                                                 .Where(
+                                                        e => e.USU_ID_USUARIO == userId
+                                                        && e.UAL_TX_ALIAS.Equals("admin"))
+                                                 .Select(e => e).FirstOrDefault();
+
+                ObjUsuario.UAL_TX_SENHA = senhaSHA512;
+
+                Update(token, ObjUsuario, _db);
+
+
+                var texto = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\App_Data\TemplateRecuperarSenha.txt");
+                texto = texto.Replace("{ username }", usuario);
+                texto = texto.Replace("{ XXXXXX }", dsSenha);
+
+                Gateways.GatewayUtils.SendMail(texto, pesPessoa[0].PES_TX_EMAIL, "SERVELOJA - Recuperação de Senha");
+
+                var list = new[] { new { Sucess = true } }.ToList<dynamic>();
+
+
+                retorno.Registros = list;
+            }
+            
+            return retorno;
+        }
+
+
+        public static Retorno ValidaCpfCnpj(string CpfCnpj)
+        {
+            ModelApiUnes _db = new ModelApiUnes();
+            _db.Configuration.ProxyCreationEnabled = false;
+
+            long cpfcnpj = Convert.ToInt64(CpfCnpj);
+            List<dynamic> pesPessoa = _db.TB_PESSOA.Where(p => p.PES_NR_CPF_CNPJ == cpfcnpj)
+                                                .Select(p => p).ToList<dynamic>();
+
+            Retorno retorno = new Retorno();
+            if (pesPessoa.Count > 0)
+                retorno.Registros = pesPessoa;
+            else
+                retorno.Registros = new List<dynamic>();
+
+            return retorno;
+        }
+
+
+        public static Retorno ValidaUsuario(string usuario)
+        {
+            ModelApiUnes _db = new ModelApiUnes();
+            _db.Configuration.ProxyCreationEnabled = false;
+
+            List<dynamic> usuUsuario = _db.TB_USUARIO.Where(u => u.USU_TX_USUARIO.Equals(usuario))
+                                                 .Select(u => u).ToList<dynamic>();
+
+            Retorno retorno = new Retorno();
+            if (usuUsuario.Count > 0)
+                retorno.Registros = usuUsuario;
+            else
+                retorno.Registros = new List<dynamic>();
+
+            return retorno;
         }
 
     }

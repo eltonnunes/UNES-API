@@ -4,9 +4,9 @@ namespace ApiUnes.Models.Object
 {
     public class Retorno
     {
-        private List<object> registros;
+        private List<dynamic> registros;
 
-        public List<object> Registros
+        public List<dynamic> Registros
         {
             get { return registros; }
             set { registros = value; }
