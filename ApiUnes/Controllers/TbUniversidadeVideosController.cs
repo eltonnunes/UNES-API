@@ -63,10 +63,56 @@ namespace ApiUnes.Controllers.Dbo
         }
 
 
+        //[HttpPut]
+        //[AcceptVerbs("PUT")]
+        // PUT /TB_UNIVERSIDADE_VIDEOS/token/
+        /*public void Put(string token, [FromBody]TB_UNIVERSIDADE_VIDEOS param)
+        {
+            // Abre nova conexão
+            using (ModelApiUnes _db = new ModelApiUnes())
+            {
+                try
+                {
+                    if (Permissoes.Autenticado(token, _db))
+                    {
+                        if (param.UNV_TX_HASH != null)
+                        {
+                            param.UNV_DT_DATA = null;
+                            //param.UNV_NR_VIEW = null;
+                            GatewayTbUniversidadeVideos.Update(token, param, _db);
+                        }
+                        else
+                        {
+                            Estatisticas values = new Estatisticas();
+                            values.Idvideo = param.UNV_ID_VIDEOS;
+                            values.Idusuario = Permissoes.GetIdUserFromToken(token);
+
+                            GatewayTbUniversidadeVideos.Update(token, values);
+
+                            TB_UNIVERSIDADE_ESTATISTICAS paramSt = new TB_UNIVERSIDADE_ESTATISTICAS();
+                            paramSt.UNV_ID_VIDEOS = values.Idvideo;
+                            paramSt.USU_ID_USUARIO = values.Idusuario;
+                            paramSt.UNE_DT_DATAVIEW = DateTime.Now;
+
+                            GatewayTbUniversidadeEstatisticas.Add(token, paramSt);
+                        }
+                    }
+                    else
+                        throw new Exception("Unauthorized");
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+        }*/
+
+
+
         [HttpPut]
         [AcceptVerbs("PUT")]
         // PUT /TB_UNIVERSIDADE_VIDEOS/token/
-        public void Put(string token, [FromBody]TB_UNIVERSIDADE_VIDEOS param)
+        public void Put(string token, TB_UNIVERSIDADE_VIDEOS param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -106,7 +152,6 @@ namespace ApiUnes.Controllers.Dbo
                 }
             }
         }
-
 
         [HttpDelete]
         [AcceptVerbs("DELETE")]

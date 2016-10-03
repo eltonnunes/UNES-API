@@ -119,7 +119,7 @@ namespace ApiUnes.Gateways.Dbo
 
 
                     // TOTAL DE REGISTROS
-                    retorno.TotalDeRegistros = query.Count();
+                    retorno.TotalDeRegistros = _db.TB_UNIVERSIDADE_TAG.Count();
 
 
                     // PAGINAÇÃO
