@@ -31,116 +31,75 @@ namespace ApiUnes.Controllers
 
 
         // POST /TB_UNIVERSIDADE_TAG/token/
-        /*[HttpPost("{token}/{TB_UNIVERSIDADE_TAG}")]
-        public HttpResponseMessage Post(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
+        [HttpPost]
+        public Int64 Post(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
         {
             // Abre nova conexão
-            using (painel_taxservices_dbContext _db = new painel_taxservices_dbContext())
+            using (ModelApiUnes _db = new ModelApiUnes())
             {
-                tbLogAcessoUsuario log = new tbLogAcessoUsuario();
                 try
                 {
-                    log = Bibliotecas.LogAcaoUsuario.New(token, JsonConvert.SerializeObject(param), "Post", _db);
-
-                    HttpResponseMessage retorno = new HttpResponseMessage();
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        dados = GatewayTB_UNIVERSIDADE_TAG.Add(token, param, _db);
-                        log.codResposta = (int)HttpStatusCode.OK;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse<>(HttpStatusCode.OK, dados);
+                        Int64 dados = GatewayTbUniversidadeTag.Add(token, param, _db);
+                        return dados;
                     }
                     else
-                    {
-                        log.codResposta = (int)HttpStatusCode.Unauthorized;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse(HttpStatusCode.Unauthorized);
-                    }
+                        throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
-                    log.codResposta = (int)HttpStatusCode.InternalServerError;
-                    log.msgErro = e.Message;
-                    Bibliotecas.LogAcaoUsuario.Save(log);//, _db);
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+                    throw new Exception(e.Message);
                 }
             }
         }
 
 
         // PUT /TB_UNIVERSIDADE_TAG/token/
-        [HttpPost("{token}/{TB_UNIVERSIDADE_TAG}")]
-        public HttpResponseMessage Put(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
+        [HttpPost]
+        public void Put(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
         {
             // Abre nova conexão
-            using (painel_taxservices_dbContext _db = new painel_taxservices_dbContext())
+            using (ModelApiUnes _db = new ModelApiUnes())
             {
-                tbLogAcessoUsuario log = new tbLogAcessoUsuario();
                 try
                 {
-                    log = Bibliotecas.LogAcaoUsuario.New(token, JsonConvert.SerializeObject(param), "Put", _db);
-
-                    HttpResponseMessage retorno = new HttpResponseMessage();
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        GatewayTB_UNIVERSIDADE_TAG.Update(token, param, _db);
-                        log.codResposta = (int)HttpStatusCode.OK;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse(HttpStatusCode.OK);
+                        GatewayTbUniversidadeTag.Update(token, param, _db);
                     }
                     else
-                    {
-                        log.codResposta = (int)HttpStatusCode.Unauthorized;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse(HttpStatusCode.Unauthorized);
-                    }
+                        throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
-                    log.codResposta = (int)HttpStatusCode.InternalServerError;
-                    log.msgErro = e.Message;
-                    Bibliotecas.LogAcaoUsuario.Save(log);//, _db);
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+                    throw new Exception(e.Message);
                 }
             }
         }
 
 
         // DELETE /TB_UNIVERSIDADE_TAG/token/
-        [HttpPost("{token}/{}")]
-        public HttpResponseMessage Delete(string token,  )
+        [HttpPost]
+        public void Delete(string token, Int64 id)
         {
             // Abre nova conexão
-            using (painel_taxservices_dbContext _db = new painel_taxservices_dbContext())
+            using (ModelApiUnes _db = new ModelApiUnes())
             {
-                tbLogAcessoUsuario log = new tbLogAcessoUsuario();
                 try
                 {
-                    log = Bibliotecas.LogAcaoUsuario.New(token, JsonConvert.SerializeObject(" : " + ), "Delete", _db);
-
-                    HttpResponseMessage retorno = new HttpResponseMessage();
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        GatewayTB_UNIVERSIDADE_TAG.Delete(token, , _db);
-                        log.codResposta = (int)HttpStatusCode.OK;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse(HttpStatusCode.OK);
+                        GatewayTbUniversidadeTag.Delete(token, id, _db);
                     }
                     else
-                    {
-                        log.codResposta = (int)HttpStatusCode.Unauthorized;
-                        Bibliotecas.LogAcaoUsuario.Save(log, _db);
-                        return Request.CreateResponse(HttpStatusCode.Unauthorized);
-                    }
+                        throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
-                    log.codResposta = (int)HttpStatusCode.InternalServerError;
-                    log.msgErro = e.Message;
-                    Bibliotecas.LogAcaoUsuario.Save(log);//, _db);
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+                    throw new Exception(e.Message);
                 }
             }
-        }*/
+        }
     }
 }

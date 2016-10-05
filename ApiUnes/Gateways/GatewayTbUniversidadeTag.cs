@@ -119,7 +119,7 @@ namespace ApiUnes.Gateways.Dbo
 
 
                     // TOTAL DE REGISTROS
-                    retorno.TotalDeRegistros = _db.TB_UNIVERSIDADE_TAG.Count();
+                    retorno.TotalDeRegistros = query.Count();
 
 
                     // PAGINAÇÃO
@@ -219,7 +219,7 @@ namespace ApiUnes.Gateways.Dbo
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static void Delete(string token, Int32 UntIdTag, ModelApiUnes _dbContext = null)
+        public static void Delete(string token, Int64 UntIdTag, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();

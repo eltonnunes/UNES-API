@@ -41,7 +41,7 @@ namespace ApiUnes.Controllers.Dbo
         [HttpPost]
         [AcceptVerbs("POST")]
         // POST /TB_UNIVERSIDADE_VIDEOS/token/
-        public Int64 Post(string token, [FromBody]TB_UNIVERSIDADE_VIDEOS param)
+        public Int64 Post(string token, TB_UNIVERSIDADE_VIDEOS param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())

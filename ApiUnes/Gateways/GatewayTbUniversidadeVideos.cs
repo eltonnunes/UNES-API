@@ -209,7 +209,7 @@ namespace ApiUnes.Negocios.Dbo
 
 
                     // TOTAL DE REGISTROS
-                    retorno.TotalDeRegistros = _db.TB_UNIVERSIDADE_VIDEOS.Count();
+                    retorno.TotalDeRegistros = query.Count();
 
 
                     // PAGINAÇÃO
