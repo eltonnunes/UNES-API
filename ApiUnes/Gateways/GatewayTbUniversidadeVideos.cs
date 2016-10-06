@@ -72,7 +72,7 @@ namespace ApiUnes.Negocios.Dbo
                         if (item.Value.Contains("%")) // LIKE
                         {
                             string UNV_TX_TITULO = Convert.ToString(item.Value).Replace("%","");
-                            entity = entity.Where(e => e.UNV_TX_TITULO.Contains(UNV_TX_TITULO)).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
+                            entity = entity.Where(e => e.UNV_TX_TITULO.Contains(UNV_TX_TITULO) || e.UNV_TX_DESCRICAO.Contains(UNV_TX_TITULO)).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
                         }
                         else
                         {
@@ -83,8 +83,8 @@ namespace ApiUnes.Negocios.Dbo
                     case CAMPOS.UNV_TX_DESCRICAO:
                         if (item.Value.Contains("%")) // LIKE
                         {
-                            string UNV_TX_DESCRICAO = Convert.ToString(item.Value).Replace("%", ""); ;
-                            entity = entity.Where(e => e.UNV_TX_DESCRICAO.Contains(UNV_TX_DESCRICAO)).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
+                            string UNV_TX_DESCRICAO = Convert.ToString(item.Value).Replace("%", "");
+                            entity = entity.Where(e => e.UNV_TX_DESCRICAO.Contains(UNV_TX_DESCRICAO) || e.UNV_TX_TITULO.Contains(UNV_TX_DESCRICAO)).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
                         }
                         else
                         {
