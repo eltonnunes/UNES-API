@@ -205,6 +205,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TbUniversidadePerfilController.cs" />
     <Compile Include="Controllers\TbUniversidadeTagController.cs" />
     <Compile Include="Controllers\TbUniversidadeTokenApiController.cs" />
     <Compile Include="Controllers\TbUniversidadeVideosController.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Controllers\UtilController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeEstatisticas.cs" />
+    <Compile Include="Gateways\GatewayTbUniversidadePerfil.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeTag.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeTokenApi.cs" />
     <Compile Include="Gateways\GatewayTbUniversidadeVideos.cs" />
@@ -225,17 +227,21 @@
     <Compile Include="Models\Object\Estatisticas.cs" />
     <Compile Include="Models\Object\Login.cs" />
     <Compile Include="Models\Object\MensagemErro.cs" />
+    <Compile Include="Models\Object\VIDEOS_PERFIL.cs" />
     <Compile Include="Models\Object\Permissoes.cs" />
     <Compile Include="Models\Object\Retorno.cs" />
     <Compile Include="Models\Object\ServeLojaContext.cs" />
     <Compile Include="Models\Object\Sucesso.cs" />
     <Compile Include="Models\Object\Token.cs" />
+    <Compile Include="Models\TB_PERFIL.cs" />
+    <Compile Include="Models\TB_PERFIL_USUARIO.cs" />
     <Compile Include="Models\TB_PESSOA.cs" />
     <Compile Include="Models\TB_UNIVERSIDADE_ESTATISTICAS.cs" />
     <Compile Include="Models\TB_UNIVERSIDADE_PERFIL.cs" />
     <Compile Include="Models\TB_UNIVERSIDADE_TAG.cs" />
     <Compile Include="Models\TB_UNIVERSIDADE_TOKEN_API.cs" />
     <Compile Include="Models\TB_UNIVERSIDADE_VIDEOS.cs" />
+    <Compile Include="Models\TB_UNIVERSIDADE_VIDEOS_PERFIL.cs" />
     <Compile Include="Models\TB_USUARIO.cs" />
     <Compile Include="Models\TB_USUARIO_ALIAS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

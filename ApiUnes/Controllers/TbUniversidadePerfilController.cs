@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ApiUnes.Gateways.Dbo;
@@ -6,22 +6,29 @@ using ApiUnes.Models;
 using ApiUnes.Models.Object;
 using System.Web.Http;
 using System.Net.Http;
+using ApiUnes.Negocios.Dbo;
 
-namespace ApiUnes.Controllers
+namespace ApiUnes.Controllers.Dbo
 {
-    public class TbUniversidadeTagController : ApiController
+    public class TbUniversidadePerfilController : ApiController
     {
 
-        // GET /TB_UNIVERSIDADE_TAG/token/colecao/campo/orderBy/pageSize/pageNumber?CAMPO1=VALOR&CAMPO2=VALOR
+        // GET /TbUniversidadePerfil/token/colecao/campo/orderBy/pageSize/pageNumber?CAMPO1=VALOR&CAMPO2=VALOR
         public Retorno Get(string token, int colecao = 0, int campo = 0, int orderBy = 0, int pageSize = 0, int pageNumber = 0)
         {
+            // Abre nova conexão
             try
             {
                 ModelApiUnes _db = new ModelApiUnes();
                 Dictionary<string, string> queryString = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
 
-                Retorno dados = GatewayTbUniversidadeTag.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString, _db);
-                return dados;
+
+                if (Permissoes.Autenticado(token, _db))
+                {
+                    return GatewayTbUniversidadePerfil.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString, _db);
+                }
+                else
+                    return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
             }
             catch (Exception e)
             {
@@ -30,9 +37,10 @@ namespace ApiUnes.Controllers
         }
 
 
-        // POST /TB_UNIVERSIDADE_TAG/token/
+        // POST /TbUniversidadePerfil/token/
         [HttpPost]
-        public Int64 Post(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
+        [AcceptVerbs("POST")]
+        public long Post(string token, [FromBody]TB_UNIVERSIDADE_PERFIL param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -41,11 +49,10 @@ namespace ApiUnes.Controllers
                 {
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        Int64 dados = GatewayTbUniversidadeTag.Add(token, param, _db);
-                        return dados;
+                        return GatewayTbUniversidadePerfil.Add(token, param, _db);
                     }
                     else
-                        return 0;// new Retorno() { Token = false }; //throw new Exception("Unauthorized");
+                        return 0; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -55,9 +62,10 @@ namespace ApiUnes.Controllers
         }
 
 
-        // PUT /TB_UNIVERSIDADE_TAG/token/
-        [HttpPost]
-        public void Put(string token, [FromBody]TB_UNIVERSIDADE_TAG param)
+        // PUT /TbUniversidadePerfil/token/
+        [HttpPut]
+        [AcceptVerbs("PUT")]
+        public void Put(string token, [FromBody]TB_UNIVERSIDADE_PERFIL param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -66,10 +74,10 @@ namespace ApiUnes.Controllers
                 {
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        GatewayTbUniversidadeTag.Update(token, param, _db);
+                        GatewayTbUniversidadePerfil.Update(token, param, _db);
                     }
                     //else
-                        //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
+                    //    return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -79,9 +87,10 @@ namespace ApiUnes.Controllers
         }
 
 
-        // DELETE /TB_UNIVERSIDADE_TAG/token/
-        [HttpPost]
-        public void Delete(string token, Int64 id)
+        // DELETE /TbUniversidadePerfil/token/UNP_ID_PERFIL
+        [HttpDelete]
+        [AcceptVerbs("DELETE")]
+        public void Delete(string token, Int32 UNP_ID_PERFIL)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -90,10 +99,10 @@ namespace ApiUnes.Controllers
                 {
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        GatewayTbUniversidadeTag.Delete(token, id, _db);
+                        GatewayTbUniversidadePerfil.Delete(token, UNP_ID_PERFIL, _db);
                     }
                     //else
-                        //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
+                    //    return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {

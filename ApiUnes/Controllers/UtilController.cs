@@ -140,12 +140,12 @@ http://www.serveloja.com.br/
                 try
                 {
                     Dictionary<string, string> queryString = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-                    if (Permissoes.Autenticado(token, _db))
-                    {
+                    //if (Permissoes.Autenticado(token, _db))
+                    //{
                         return GatewayUtils.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString, _db);
-                    }
-                    else
-                        throw new Exception("Unauthorized");
+                   // }
+                    //else
+                    //    return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {

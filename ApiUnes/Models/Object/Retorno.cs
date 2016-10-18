@@ -43,5 +43,14 @@ namespace ApiUnes.Models.Object
             get { return totais; }
             set { totais = value; }
         }
+
+
+        private bool token;
+
+        public bool Token
+        {
+            get { return token; }
+            set { token = value; }
+        }
     }
 }

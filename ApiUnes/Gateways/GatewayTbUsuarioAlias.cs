@@ -225,6 +225,12 @@ namespace ApiUnes.Gateways.Dbo
                     List<dynamic> CollectionTB_USUARIO_ALIAS = new List<dynamic>();
                     Retorno retorno = new Retorno();
 
+                    long result = Permissoes.GetPerfilPermissionFromToken(token);
+                    if (result > 0 && result != 6)
+                        retorno.Token = true;
+                    else
+                        retorno.Token = false;
+
                     // GET QUERY
                     var query = getQuery(_db, colecao, campo, orderBy, pageSize, pageNumber, queryString);
 
@@ -285,6 +291,7 @@ namespace ApiUnes.Gateways.Dbo
                             UAL_BL_GRATUIDADE = e.UAL_BL_GRATUIDADE,
                             UAL_DT_CRIACAO = e.UAL_DT_CRIACAO,
                         }).ToList<dynamic>();
+                        retorno.Token = true;
                     }
 
                     transaction.Commit();
@@ -467,25 +474,42 @@ namespace ApiUnes.Gateways.Dbo
         {
             try
             {
-                var str = senha;
-                var alg = SHA512.Create();
-                byte[] byteArray = new byte[255];
-                byteArray = alg.ComputeHash(Encoding.UTF8.GetBytes(str));
-                var cript = BitConverter.ToString(byteArray).Replace("-", "");
-                string senhaSHA512 = cript.Substring(64) + cript.Substring(0, 64);
+                Boolean PERFIL = Permissoes.GetAdminPermissionFromUser(usuario);
 
-                ModelApiUnes _db = new ModelApiUnes();
-                int usuIdUsuario = (int)_db.TB_USUARIO.Where(u => u.USU_TX_USUARIO.Equals(usuario))
-                                                     .Select(u => u.USU_ID_USUARIO).FirstOrDefault();
+                if (PERFIL)
+                {
+                    var str = senha;
+                    var alg = SHA512.Create();
+                    byte[] byteArray = new byte[255];
+                    byteArray = alg.ComputeHash(Encoding.UTF8.GetBytes(str));
+                    var cript = BitConverter.ToString(byteArray).Replace("-", "");
+                    string senhaSHA512 = cript.Substring(64) + cript.Substring(0, 64);
 
-                TB_USUARIO_ALIAS ObjUsuario = _db.TB_USUARIO_ALIAS.Where(e => e.USU_ID_USUARIO.Equals(usuIdUsuario)
-                                                                    && e.UAL_TX_ALIAS.Equals("admin")
-                                                                    && e.UAL_TX_SENHA.Equals(senhaSHA512))
-                                                              .Select(e => e).FirstOrDefault();
-                if( ObjUsuario != null)
-                    return GatewayTbUniversidadeTokenApi.NewToken(usuario + usuario.GetHashCode() + DateTime.Now + DateTime.Now.GetHashCode(), usuIdUsuario);
-                else
-                    return new Retorno();
+                    ModelApiUnes _db = new ModelApiUnes();
+                    int usuIdUsuario = (int)_db.TB_USUARIO.Where(u => u.USU_TX_USUARIO.Equals(usuario))
+                                                         .Select(u => u.USU_ID_USUARIO).FirstOrDefault();
+
+                    TB_USUARIO_ALIAS ObjUsuario = _db.TB_USUARIO_ALIAS.Where(e => e.USU_ID_USUARIO.Equals(usuIdUsuario)
+                                                                        && e.UAL_TX_ALIAS.Equals("admin")
+                                                                        && e.UAL_TX_SENHA.Equals(senhaSHA512))
+                                                                  .Select(e => e).FirstOrDefault();
+                    if (ObjUsuario != null)
+                        return GatewayTbUniversidadeTokenApi.NewToken(usuario + usuario.GetHashCode() + DateTime.Now + DateTime.Now.GetHashCode(), usuIdUsuario);
+                    else
+                    {
+                        return new Retorno();
+                    }
+                }else
+                {
+                    Retorno retorno = new Retorno();
+                    List<dynamic> item = new List<dynamic>();
+                    item.Add(false);
+
+                    retorno.Registros = item;
+
+                    return retorno;
+
+                }
             }
             catch (Exception e)
             {
@@ -525,6 +549,13 @@ namespace ApiUnes.Gateways.Dbo
             List<TB_PESSOA> pesPessoa = _db.TB_PESSOA.Where(p => p.PES_NR_CPF_CNPJ == cpfcnpj)
                                                 .Select(p => p).ToList<TB_PESSOA>();
 
+            if (String.IsNullOrEmpty(pesPessoa[0].PES_TX_EMAIL) || String.IsNullOrWhiteSpace(pesPessoa[0].PES_TX_EMAIL))
+            {
+                retorno = new Retorno();
+                retorno.Token = false;
+                return retorno;
+            }
+
             if ((usuUsuario.Count > 0) && (pesPessoa.Count > 0))
             {
                 string dsSenha = new Random().Next(100000, 999999).ToString();
@@ -550,12 +581,12 @@ namespace ApiUnes.Gateways.Dbo
                 var texto = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\App_Data\TemplateRecuperarSenha.txt");
                 texto = texto.Replace("{ username }", usuario);
                 texto = texto.Replace("{ XXXXXX }", dsSenha);
-
                 Gateways.GatewayUtils.SendMail(texto, pesPessoa[0].PES_TX_EMAIL, "SERVELOJA - Recuperação de Senha");
 
+
+
                 var list = new[] { new { Sucess = true } }.ToList<dynamic>();
-
-
+                retorno.Token = true;
                 retorno.Registros = list;
             }
             

@@ -26,7 +26,7 @@ namespace api.Controllers.Dbo
                         return GatewayTbUsuarioAlias.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString, _db);
                     }
                     else
-                        throw new Exception("Unauthorized");
+                        return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {

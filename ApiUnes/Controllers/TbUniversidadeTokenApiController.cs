@@ -13,6 +13,7 @@ namespace ApiUnes.Controllers
     {
 
         // GET /Tb_Universidade_Token_Api/token/colecao/campo/orderBy/pageSize/pageNumber?CAMPO1=VALOR&CAMPO2=VALOR
+        [HttpGet]
         public Retorno Get(string token, int colecao = 0, int campo = 0, int orderBy = 0, int pageSize = 0, int pageNumber = 0)
         {
             // Abre nova conexão
@@ -25,7 +26,7 @@ namespace ApiUnes.Controllers
                     if (Permissoes.Autenticado(token, _db))
                         return GatewayTbUniversidadeTokenApi.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString, _db);
                     else
-                        throw new Exception("Unauthorized");
+                        return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {

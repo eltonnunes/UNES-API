@@ -28,7 +28,7 @@ namespace ApiUnes.Controllers.Dbo
                         return GatewayTbUniversidadeVideos.Get(token, colecao, campo, orderBy, pageSize, pageNumber, queryString);
                     }
                     else
-                        throw new Exception("Unauthorized");
+                        return new Retorno() { Token = false }; //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -41,7 +41,7 @@ namespace ApiUnes.Controllers.Dbo
         [HttpPost]
         [AcceptVerbs("POST")]
         // POST /TB_UNIVERSIDADE_VIDEOS/token/
-        public Int64 Post(string token, TB_UNIVERSIDADE_VIDEOS param)
+        public Int64 Post(string token, Models.Object.VIDEOS_PERFIL param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -53,7 +53,7 @@ namespace ApiUnes.Controllers.Dbo
                         return GatewayTbUniversidadeVideos.Add(token, param, _db);
                     }
                     else
-                        throw new Exception("Unauthorized");
+                        return 0;// new Retorno() { Token = false }; //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -98,7 +98,7 @@ namespace ApiUnes.Controllers.Dbo
                         }
                     }
                     else
-                        throw new Exception("Unauthorized");
+                        return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -112,7 +112,7 @@ namespace ApiUnes.Controllers.Dbo
         [HttpPut]
         [AcceptVerbs("PUT")]
         // PUT /TB_UNIVERSIDADE_VIDEOS/token/
-        public void Put(string token, TB_UNIVERSIDADE_VIDEOS param)
+        public void Put(string token, Models.Object.VIDEOS_PERFIL param)
         {
             // Abre nova conexão
             using (ModelApiUnes _db = new ModelApiUnes())
@@ -121,16 +121,16 @@ namespace ApiUnes.Controllers.Dbo
                 {
                     if (Permissoes.Autenticado(token, _db))
                     {
-                        if (param.UNV_TX_HASH != null)
+                        if (param.VIDEOS.UNV_TX_HASH != null)
                         {
-                            param.UNV_DT_DATA = null;
+                            param.VIDEOS.UNV_DT_DATA = null;
                             //param.UNV_NR_VIEW = null;
                             GatewayTbUniversidadeVideos.Update(token, param, _db);
                         }
                         else
                         {
                             Estatisticas values = new Estatisticas();
-                            values.Idvideo = param.UNV_ID_VIDEOS;
+                            values.Idvideo = param.VIDEOS.UNV_ID_VIDEOS;
                             values.Idusuario = Permissoes.GetIdUserFromToken(token);
 
                             GatewayTbUniversidadeVideos.Update(token, values);
@@ -143,8 +143,8 @@ namespace ApiUnes.Controllers.Dbo
                             GatewayTbUniversidadeEstatisticas.Add(token, paramSt);
                         }
                     }
-                    else
-                        throw new Exception("Unauthorized");
+                    //else
+                        //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {
@@ -167,8 +167,8 @@ namespace ApiUnes.Controllers.Dbo
                     {
                         GatewayTbUniversidadeVideos.Delete(token, id, _db);
                     }
-                    else
-                        throw new Exception("Unauthorized");
+                    //else
+                        //return new Retorno() { Token = false }; //throw new Exception("Unauthorized");
                 }
                 catch (Exception e)
                 {

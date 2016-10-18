@@ -129,8 +129,14 @@ namespace ApiUnes.Negocios.Dbo
 							List<dynamic> CollectionTb_Universidade_Estatisticas = new List<dynamic>();
 							Retorno retorno = new Retorno();
 
-							// GET QUERY
-							var query = getQuery(_db, colecao, campo, orderBy, pageSize, pageNumber, queryString);
+                            long result = Permissoes.GetPerfilPermissionFromToken(token);
+                            if(result > 0 && result != 6)
+                                retorno.Token = true;
+                            else
+                                retorno.Token = false;
+
+                    // GET QUERY
+                    var query = getQuery(_db, colecao, campo, orderBy, pageSize, pageNumber, queryString);
 
 
 							// TOTAL DE REGISTROS

@@ -76,7 +76,13 @@ namespace ApiUnes.Gateways.Dbo
                     /// PERSONALIZADO
 
                     case CAMPOS.UTA_DT_VALIDADE:
-                        if (item.Value.Contains("|")) // BETWEEN
+                        if (item.Value.Contains("VALIDAR")) // BETWEEN
+                        {
+                            
+                            DateTime dta = DateTime.Now;
+                            entity = entity.Where(e => e.UTA_DT_VALIDADE > dta);
+                        }
+                        else if (item.Value.Contains("|")) // BETWEEN
                         {
                             string[] busca = item.Value.Split('|');
                             DateTime dtaIni = DateTime.ParseExact(busca[0] + " 00:00:00.000", "yyyyMMdd HH:mm:ss.fff", CultureInfo.InvariantCulture);
@@ -185,6 +191,12 @@ namespace ApiUnes.Gateways.Dbo
                     else
                         queryString.Add("" + (int)CAMPOS.UTA_TX_TOKEN, token);
 
+                    outValue = null;
+                    if (queryString.TryGetValue("" + (int)CAMPOS.UTA_DT_VALIDADE, out outValue))
+                        queryString["" + (int)CAMPOS.UTA_DT_VALIDADE] = "VALIDAR";
+                    else
+                        queryString.Add("" + (int)CAMPOS.UTA_DT_VALIDADE, "VALIDAR");
+
 
                     //DECLARAÇÕES
                     List<dynamic> CollectionTB_UNIVERSIDADE_TOKEN_API = new List<dynamic>();
@@ -221,6 +233,7 @@ namespace ApiUnes.Gateways.Dbo
                             UTA_DT_GERACAO = e.UTA_DT_GERACAO,
                             UTA_TX_TOKEN = e.UTA_TX_TOKEN,
                         }).ToList<dynamic>();
+                        retorno.Token = true;
                     }
                     else if (colecao == 0)
                     {
@@ -233,6 +246,7 @@ namespace ApiUnes.Gateways.Dbo
                             UTA_DT_GERACAO = e.UTA_DT_GERACAO,
                             UTA_TX_TOKEN = e.UTA_TX_TOKEN,
                         }).ToList<dynamic>();
+                        retorno.Token = true;
                     }
                     else if (colecao == 2) // VALIDAÇÃO
                     {
@@ -252,9 +266,25 @@ namespace ApiUnes.Gateways.Dbo
                                                                                         )
                                                             ).FirstOrDefault()
                         }).ToList<dynamic>();
+
+                        retorno.Token = true;
+                    }
+                    else if (colecao == 3) // VALIDA PERFIL ADMINISTRATIVO
+                    {
+                        CollectionTB_UNIVERSIDADE_TOKEN_API = query.Select(e => e).ToList<dynamic>();
+
+                        retorno.Token = true;
+
+                        List<dynamic> item = new List<dynamic>();
+                        Boolean result = Permissoes.GetAdminPermissionFromToken(token);
+                        item.Add(result);
+
+                        retorno.Token = result;
+                        retorno.Registros = item;
+                        return retorno;
                     }
 
-                    retorno.Registros = CollectionTB_UNIVERSIDADE_TOKEN_API;
+                        retorno.Registros = CollectionTB_UNIVERSIDADE_TOKEN_API;
                     return retorno;
                 }
                 catch (Exception e)
@@ -422,8 +452,12 @@ namespace ApiUnes.Gateways.Dbo
                 TB_UNIVERSIDADE_TOKEN_API tokenApi = new TB_UNIVERSIDADE_TOKEN_API();
                 tokenApi.USU_ID_USUARIO = usuIdUsuario;
                 tokenApi.UTA_DT_GERACAO = DateTime.Now;
-                // Adiciona um dia de Validade para o Token
-                tokenApi.UTA_DT_VALIDADE = DateTime.Now.AddDays(1);
+
+                string horasLifeCircleString = _db.Database.SqlQuery<string>("SELECT PAR_TX FROM dbo.TB_PARAMETRO WHERE PAR_ID = 4").FirstOrDefault<string>();
+                double horasLifeCircle = Convert.ToDouble(horasLifeCircleString);
+
+                // Adiciona tempo de vida para a Validade do Token
+                tokenApi.UTA_DT_VALIDADE = DateTime.Now.AddHours(horasLifeCircle);// .AddDays(1);
                 tokenApi.UTA_TX_TOKEN = token;
                 Int64 idToken = Add("", tokenApi, _db);
 

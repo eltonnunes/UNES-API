@@ -34,6 +34,8 @@ namespace ApiUnes.Negocios.Dbo
             UNT_ID_TAG = 106,
             UNV_TX_HASH = 107,
 
+            VIDEO_PERFIL = 201
+
         };
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace ApiUnes.Negocios.Dbo
         /// <param name="pageNumber"></param>
         /// <param name="queryString"></param>
         /// <returns></returns>
-        private static IQueryable<TB_UNIVERSIDADE_VIDEOS> getQuery(ModelApiUnes _db, int colecao, int campo, int orderby, int pageSize, int pageNumber, Dictionary<string, string> queryString)
+        private static IQueryable<TB_UNIVERSIDADE_VIDEOS> getQuery(string token, ModelApiUnes _db, int colecao, int campo, int orderby, int pageSize, int pageNumber, Dictionary<string, string> queryString)
         {
             _db.Configuration.ProxyCreationEnabled = false;
 
@@ -55,6 +57,17 @@ namespace ApiUnes.Negocios.Dbo
 
             #region WHERE - ADICIONA OS FILTROS A QUERY
 
+            long PERFIL = Permissoes.GetPerfilPermissionFromToken(token);
+
+            if (PERFIL != 1)
+            {
+                string outValue = null;
+                if (queryString.TryGetValue("" + (int)CAMPOS.VIDEO_PERFIL, out outValue))
+                    queryString["" + (int)CAMPOS.VIDEO_PERFIL] = PERFIL.ToString();
+                else
+                    queryString.Add("" + (int)CAMPOS.VIDEO_PERFIL, PERFIL.ToString());
+            }
+
             // ADICIONA OS FILTROS A QUERY
             foreach (var item in queryString)
             {
@@ -62,8 +75,11 @@ namespace ApiUnes.Negocios.Dbo
                 CAMPOS filtroEnum = (CAMPOS)key;
                 switch (filtroEnum)
                 {
-
-
+                    //_db.TB_UNIVERSIDADE_PERFIL.Where(x => _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == e.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList().Contains(x.UNP_ID_PERFIL)).Select(x => x).ToList()
+                    case CAMPOS.VIDEO_PERFIL:
+                        long VIDEO_PERFIL = Convert.ToInt64(item.Value);
+                        entity = entity.Where(e => _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNP_ID_PERFIL == VIDEO_PERFIL).Select(p => p.UNV_ID_VIDEO).ToList().Contains(e.UNV_ID_VIDEOS) ).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
+                        break;
                     case CAMPOS.UNV_ID_VIDEOS:
                         Int32 UNV_ID_VIDEOS = Convert.ToInt32(item.Value);
                         entity = entity.Where(e => e.UNV_ID_VIDEOS.Equals(UNV_ID_VIDEOS)).AsQueryable<TB_UNIVERSIDADE_VIDEOS>();
@@ -204,8 +220,14 @@ namespace ApiUnes.Negocios.Dbo
                     List<dynamic> CollectionTb_Universidade_Videos = new List<dynamic>();
                     Retorno retorno = new Retorno();
 
+                    long result = Permissoes.GetPerfilPermissionFromToken(token);
+                    if (result > 0 && result != 6)
+                        retorno.Token = true;
+                    else
+                        retorno.Token = false;
+
                     // GET QUERY
-                    var query = getQuery(_db, colecao, campo, orderBy, pageSize, pageNumber, queryString);
+                    var query = getQuery(token, _db, colecao, campo, orderBy, pageSize, pageNumber, queryString);
 
 
                     // TOTAL DE REGISTROS
@@ -235,6 +257,13 @@ namespace ApiUnes.Negocios.Dbo
                             UNV_DT_DATA = e.UNV_DT_DATA,
                             UNT_ID_TAG = e.UNT_ID_TAG,
                             UNV_TX_HASH = e.UNV_TX_HASH,
+                            UNT_TAG = _db.TB_UNIVERSIDADE_TAG.Where(p => p.UNT_ID_TAG == e.UNT_ID_TAG).FirstOrDefault(),
+                            PERFIS = _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == e.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList()//_db.TB_UNIVERSIDADE_PERFIL.Where(x => _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == e.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList().Contains(x.UNP_ID_PERFIL)).Select(x => x).ToList()
+
+
+
+
+
                         }).ToList<dynamic>();
                     }
                     else if (colecao == 0)
@@ -250,8 +279,10 @@ namespace ApiUnes.Negocios.Dbo
                             UNV_DT_DATA = e.UNV_DT_DATA,
                             UNT_ID_TAG = e.UNT_ID_TAG,
                             UNV_TX_HASH = e.UNV_TX_HASH,
-                            UNT_TAG = _db.TB_UNIVERSIDADE_TAG.Where(p => p.UNT_ID_TAG == e.UNT_ID_TAG).FirstOrDefault()
-                        }).ToList<dynamic>();
+                            UNT_TAG = _db.TB_UNIVERSIDADE_TAG.Where(p => p.UNT_ID_TAG == e.UNT_ID_TAG).FirstOrDefault(),
+                            PERFIS = _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == e.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList()//_db.TB_UNIVERSIDADE_PERFIL.Where(x => _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == e.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList().Contains(x.UNP_ID_PERFIL)).Select(x => x).ToList()
+                            ,ESTATISTICAS = e.TB_UNIVERSIDADE_ESTATISTICAS.Count
+                        }).OrderByDescending(e => e.ESTATISTICAS).ToList<dynamic>();
                     }
 
                     retorno.Registros = CollectionTb_Universidade_Videos;
@@ -281,7 +312,7 @@ namespace ApiUnes.Negocios.Dbo
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static Int64 Add(string token, TB_UNIVERSIDADE_VIDEOS param, ModelApiUnes _dbContext = null)
+        public static Int64 Add(string token, Models.Object.VIDEOS_PERFIL param, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
@@ -290,11 +321,24 @@ namespace ApiUnes.Negocios.Dbo
             {
                 try
                 {
-                    param.UNV_ID_VIDEOS = 0;
-                    _db.TB_UNIVERSIDADE_VIDEOS.Add(param);
+                    param.VIDEOS.UNV_ID_VIDEOS = 0;
+                    _db.TB_UNIVERSIDADE_VIDEOS.Add(param.VIDEOS);
                     _db.SaveChanges();
+                    
+                    foreach (var item in param.VIDEOSPERFIL)
+                    {
+                        TB_UNIVERSIDADE_VIDEOS_PERFIL obj = new TB_UNIVERSIDADE_VIDEOS_PERFIL
+                        {
+                            UNP_ID_PERFIL = item.UNP_ID_PERFIL,
+                            UNV_ID_VIDEO = param.VIDEOS.UNV_ID_VIDEOS
+                        };
+                        _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Add(obj);
+                        _db.SaveChanges();
+                    }
                     transaction.Commit();
-                    return param.UNV_ID_VIDEOS;
+
+
+                    return param.VIDEOS.UNV_ID_VIDEOS;
                 }
                 catch (Exception e)
                 {
@@ -356,7 +400,7 @@ namespace ApiUnes.Negocios.Dbo
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static void Update(string token, TB_UNIVERSIDADE_VIDEOS param, ModelApiUnes _dbContext = null)
+        public static void Update(string token, Models.Object.VIDEOS_PERFIL param, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
@@ -365,26 +409,47 @@ namespace ApiUnes.Negocios.Dbo
             {
                 try
                 {
+                    ModelApiUnes _dbDel = new ModelApiUnes();
+                    // REMOVE TODOS
+                    List<long> videoPerfis = _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(p => p.UNV_ID_VIDEO == param.VIDEOS.UNV_ID_VIDEOS).Select(p => p.UNP_ID_PERFIL).ToList();
+                    foreach (long item in videoPerfis)
+                    {
+                        _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Remove(_db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Where(e => e.UNP_ID_PERFIL == item).Where(p => p.UNV_ID_VIDEO == param.VIDEOS.UNV_ID_VIDEOS).First());
+                        _db.SaveChanges();
+                    }
+
+                        // ADICIONA 
+                        foreach (var item in param.VIDEOSPERFIL)
+                    {
+                        TB_UNIVERSIDADE_VIDEOS_PERFIL obj = new TB_UNIVERSIDADE_VIDEOS_PERFIL
+                        {
+                            UNP_ID_PERFIL = item.UNP_ID_PERFIL,
+                            UNV_ID_VIDEO = param.VIDEOS.UNV_ID_VIDEOS
+                        };
+                        _db.TB_UNIVERSIDADE_VIDEOS_PERFIL.Add(obj);
+                        _db.SaveChanges();
+                    }
+
                     TB_UNIVERSIDADE_VIDEOS value = _db.TB_UNIVERSIDADE_VIDEOS
-                                    .Where(e => e.UNV_ID_VIDEOS.Equals(param.UNV_ID_VIDEOS))
+                                    .Where(e => e.UNV_ID_VIDEOS.Equals(param.VIDEOS.UNV_ID_VIDEOS))
                                     .First<TB_UNIVERSIDADE_VIDEOS>();
 
 
 
                     /*if (param.UNV_ID_VIDEOS != value.UNV_ID_VIDEOS)
                         value.UNV_ID_VIDEOS = param.UNV_ID_VIDEOS;*/
-                    if (param.UNV_TX_TITULO != null && param.UNV_TX_TITULO != value.UNV_TX_TITULO)
-                        value.UNV_TX_TITULO = param.UNV_TX_TITULO;
-                    if (param.UNV_TX_DESCRICAO != null && param.UNV_TX_DESCRICAO != value.UNV_TX_DESCRICAO)
-                        value.UNV_TX_DESCRICAO = param.UNV_TX_DESCRICAO;
+                    if (param.VIDEOS.UNV_TX_TITULO != null && param.VIDEOS.UNV_TX_TITULO != value.UNV_TX_TITULO)
+                        value.UNV_TX_TITULO = param.VIDEOS.UNV_TX_TITULO;
+                    if (param.VIDEOS.UNV_TX_DESCRICAO != null && param.VIDEOS.UNV_TX_DESCRICAO != value.UNV_TX_DESCRICAO)
+                        value.UNV_TX_DESCRICAO = param.VIDEOS.UNV_TX_DESCRICAO;
                     /*if (param.UNV_NR_VIEW != null && param.UNV_NR_VIEW != value.UNV_NR_VIEW)
                         value.UNV_NR_VIEW = param.UNV_NR_VIEW;
                     if (param.UNV_NR_LIKE != null && param.UNV_NR_LIKE != value.UNV_NR_LIKE)
                         value.UNV_NR_LIKE = param.UNV_NR_LIKE;
                     if (param.UNV_DT_DATA != null && param.UNV_DT_DATA != value.UNV_DT_DATA)
                         value.UNV_DT_DATA = param.UNV_DT_DATA;*/
-                    if (param.UNT_ID_TAG != value.UNT_ID_TAG)
-                        value.UNT_ID_TAG = param.UNT_ID_TAG;
+                    if (param.VIDEOS.UNT_ID_TAG != value.UNT_ID_TAG)
+                        value.UNT_ID_TAG = param.VIDEOS.UNT_ID_TAG;
                     /*if (param.UNV_TX_HASH != null && param.UNV_TX_HASH != value.UNV_TX_HASH)
                         value.UNV_TX_HASH = param.UNV_TX_HASH;*/
                     _db.SaveChanges();

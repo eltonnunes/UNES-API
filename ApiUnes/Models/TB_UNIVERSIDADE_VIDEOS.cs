@@ -12,7 +12,6 @@ namespace ApiUnes.Models
         public TB_UNIVERSIDADE_VIDEOS()
         {
             TB_UNIVERSIDADE_ESTATISTICAS = new HashSet<TB_UNIVERSIDADE_ESTATISTICAS>();
-            TB_UNIVERSIDADE_PERFIL = new HashSet<TB_UNIVERSIDADE_PERFIL>();
         }
 
         [Key]
@@ -38,8 +37,5 @@ namespace ApiUnes.Models
         public virtual ICollection<TB_UNIVERSIDADE_ESTATISTICAS> TB_UNIVERSIDADE_ESTATISTICAS { get; set; }
 
         public virtual TB_UNIVERSIDADE_TAG TB_UNIVERSIDADE_TAG { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TB_UNIVERSIDADE_PERFIL> TB_UNIVERSIDADE_PERFIL { get; set; }
     }
 }

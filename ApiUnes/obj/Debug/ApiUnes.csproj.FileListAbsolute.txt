@@ -241,7 +241,7 @@ E:\WorkDir\UNES\webapi\ApiUnes\bin\System.Web.Razor.xml
 E:\WorkDir\UNES\webapi\ApiUnes\bin\System.Web.WebPages.xml
 E:\WorkDir\UNES\webapi\ApiUnes\bin\System.Web.WebPages.Deployment.xml
 E:\WorkDir\UNES\webapi\ApiUnes\bin\System.Web.WebPages.Razor.xml
-E:\WorkDir\UNES\webapi\ApiUnes\obj\Debug\ApiUnes.csprojResolveAssemblyReference.cache
 E:\WorkDir\UNES\webapi\ApiUnes\obj\Debug\ApiUnes.dll
 E:\WorkDir\UNES\webapi\ApiUnes\obj\Debug\ApiUnes.pdb
 E:\WorkDir\UNES\webapi\ApiUnes\bin\App_Data\TemplateRecuperarSenha.txt
+E:\WorkDir\UNES\webapi\ApiUnes\obj\Debug\ApiUnes.csprojResolveAssemblyReference.cache

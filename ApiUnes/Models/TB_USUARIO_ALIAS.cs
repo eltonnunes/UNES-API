@@ -41,6 +41,8 @@ namespace ApiUnes.Models
 
         public DateTime? UAL_DT_CRIACAO { get; set; }
 
+        public virtual TB_PERFIL TB_PERFIL { get; set; }
+
         public virtual TB_USUARIO TB_USUARIO { get; set; }
     }
 }

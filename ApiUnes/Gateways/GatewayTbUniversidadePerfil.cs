@@ -1,22 +1,19 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ApiUnes.Models;
 using ApiUnes.Models.Object;
-using System.Data;
-using System.Linq;
 
-namespace ApiUnes.Gateways.Dbo
+namespace ApiUnes.Negocios.Dbo
 {
-    public class GatewayTbUniversidadeTag
+    public class GatewayTbUniversidadePerfil
     {
-        //static ModelApiUnes _db = new ModelApiUnes();
 
         /// <summary>
         /// Auto Loader
         /// </summary>
-        public GatewayTbUniversidadeTag()
+        public GatewayTbUniversidadePerfil()
         {
-            
         }
 
         public static string SIGLA_QUERY = "";
@@ -26,13 +23,13 @@ namespace ApiUnes.Gateways.Dbo
         /// </summary>
         public enum CAMPOS
         {
-            UNT_ID_TAG = 100,
-            UNT_TX_NOME = 101,
+            UNP_ID_PERFIL = 100,
+            UNP_TX_NOME = 101,
 
         };
 
         /// <summary>
-        /// Get TB_UNIVERSIDADE_TAG/TB_UNIVERSIDADE_TAG
+        /// Get TB_UNIVERSIDADE_PERFIL/TB_UNIVERSIDADE_PERFIL
         /// </summary>
         /// <param name="colecao"></param>
         /// <param name="campo"></param>
@@ -41,12 +38,10 @@ namespace ApiUnes.Gateways.Dbo
         /// <param name="pageNumber"></param>
         /// <param name="queryString"></param>
         /// <returns></returns>
-        private static IQueryable<TB_UNIVERSIDADE_TAG> getQuery(ModelApiUnes _db, int colecao, int campo, int orderby, int pageSize, int pageNumber, Dictionary<string, string> queryString)
+        private static IQueryable<TB_UNIVERSIDADE_PERFIL> getQuery(ModelApiUnes _db, int colecao, int campo, int orderby, int pageSize, int pageNumber, Dictionary<string, string> queryString)
         {
-
-            _db.Configuration.ProxyCreationEnabled = false;
             // DEFINE A QUERY PRINCIPAL 
-            var entity = _db.TB_UNIVERSIDADE_TAG.AsQueryable<TB_UNIVERSIDADE_TAG>();// .AsQueryable<TB_UNIVERSIDADE_TAG>();
+            var entity = _db.TB_UNIVERSIDADE_PERFIL.AsQueryable<TB_UNIVERSIDADE_PERFIL>();
 
             #region WHERE - ADICIONA OS FILTROS A QUERY
 
@@ -59,13 +54,13 @@ namespace ApiUnes.Gateways.Dbo
                 {
 
 
-                    case CAMPOS.UNT_ID_TAG:
-                        Int32 UNT_ID_TAG = Convert.ToInt32(item.Value);
-                        entity = entity.Where(e => e.UNT_ID_TAG.Equals(UNT_ID_TAG)).AsQueryable<TB_UNIVERSIDADE_TAG>();
+                    case CAMPOS.UNP_ID_PERFIL:
+                        Int32 UNP_ID_PERFIL = Convert.ToInt32(item.Value);
+                        entity = entity.Where(e => e.UNP_ID_PERFIL.Equals(UNP_ID_PERFIL)).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
                         break;
-                    case CAMPOS.UNT_TX_NOME:
-                        string UNT_TX_NOME = Convert.ToString(item.Value);
-                        entity = entity.Where(e => e.UNT_TX_NOME.Equals(UNT_TX_NOME)).AsQueryable<TB_UNIVERSIDADE_TAG>();
+                    case CAMPOS.UNP_TX_NOME:
+                        string UNP_TX_NOME = Convert.ToString(item.Value);
+                        entity = entity.Where(e => e.UNP_TX_NOME.Equals(UNP_TX_NOME)).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
                         break;
 
                 }
@@ -78,13 +73,13 @@ namespace ApiUnes.Gateways.Dbo
             switch (filtro)
             {
 
-                case CAMPOS.UNT_ID_TAG:
-                    if (orderby == 0) entity = entity.OrderBy(e => e.UNT_ID_TAG).AsQueryable<TB_UNIVERSIDADE_TAG>();
-                    else entity = entity.OrderByDescending(e => e.UNT_ID_TAG).AsQueryable<TB_UNIVERSIDADE_TAG>();
+                case CAMPOS.UNP_ID_PERFIL:
+                    if (orderby == 0) entity = entity.OrderBy(e => e.UNP_ID_PERFIL).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
+                    else entity = entity.OrderByDescending(e => e.UNP_ID_PERFIL).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
                     break;
-                case CAMPOS.UNT_TX_NOME:
-                    if (orderby == 0) entity = entity.OrderBy(e => e.UNT_TX_NOME).AsQueryable<TB_UNIVERSIDADE_TAG>();
-                    else entity = entity.OrderByDescending(e => e.UNT_TX_NOME).AsQueryable<TB_UNIVERSIDADE_TAG>();
+                case CAMPOS.UNP_TX_NOME:
+                    if (orderby == 0) entity = entity.OrderBy(e => e.UNP_TX_NOME).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
+                    else entity = entity.OrderByDescending(e => e.UNP_TX_NOME).AsQueryable<TB_UNIVERSIDADE_PERFIL>();
                     break;
 
             }
@@ -96,8 +91,9 @@ namespace ApiUnes.Gateways.Dbo
         }
 
 
+
         /// <summary>
-        /// Retorna TB_UNIVERSIDADE_TAG/TB_UNIVERSIDADE_TAG
+        /// Retorna TB_UNIVERSIDADE_PERFIL/TB_UNIVERSIDADE_PERFIL
         /// </summary>
         /// <returns></returns>
         public static Retorno Get(string token, int colecao = 0, int campo = 0, int orderBy = 0, int pageSize = 0, int pageNumber = 0, Dictionary<string, string> queryString = null, ModelApiUnes _dbContext = null)
@@ -105,13 +101,12 @@ namespace ApiUnes.Gateways.Dbo
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
             else _db = _dbContext;
-
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
                 {
                     //DECLARAÇÕES
-                    List<dynamic> CollectionTB_UNIVERSIDADE_TAG = new List<dynamic>();
+                    List<dynamic> CollectionTB_UNIVERSIDADE_PERFIL = new List<dynamic>();
                     Retorno retorno = new Retorno();
 
                     long result = Permissoes.GetPerfilPermissionFromToken(token);
@@ -141,30 +136,32 @@ namespace ApiUnes.Gateways.Dbo
                     // COLEÇÃO DE RETORNO
                     if (colecao == 1)
                     {
-                        CollectionTB_UNIVERSIDADE_TAG = query.Select(e => new
+                        CollectionTB_UNIVERSIDADE_PERFIL = query.Select(e => new
                         {
 
-                            UntIdTag = e.UNT_ID_TAG,
-                            UntTxNome = e.UNT_TX_NOME,
+
+                            UNP_ID_PERFIL = e.UNP_ID_PERFIL,
+                            UNP_TX_NOME = e.UNP_TX_NOME,
+
                         }).ToList<dynamic>();
                     }
                     else if (colecao == 0)
                     {
-                        CollectionTB_UNIVERSIDADE_TAG = query.Select(e => new
+                        CollectionTB_UNIVERSIDADE_PERFIL = query.Select(e => new
                         {
 
-                            UntIdTag = e.UNT_ID_TAG,
-                            UntTxNome = e.UNT_TX_NOME,
+
+                            UNP_ID_PERFIL = e.UNP_ID_PERFIL,
+                            UNP_TX_NOME = e.UNP_TX_NOME,
+
                         }).ToList<dynamic>();
                     }
 
-                    retorno.Registros = CollectionTB_UNIVERSIDADE_TAG;
-
+                    retorno.Registros = CollectionTB_UNIVERSIDADE_PERFIL;
                     return retorno;
                 }
                 catch (Exception e)
                 {
-                    transaction.Rollback();
                     throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
                 }
                 finally
@@ -183,11 +180,11 @@ namespace ApiUnes.Gateways.Dbo
 
 
         /// <summary>
-        /// Adiciona nova TB_UNIVERSIDADE_TAG
+        /// Adiciona nova TB_UNIVERSIDADE_PERFIL
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static Int64 Add(string token, TB_UNIVERSIDADE_TAG param, ModelApiUnes _dbContext = null)
+        public static long Add(string token, TB_UNIVERSIDADE_PERFIL param, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
@@ -196,14 +193,13 @@ namespace ApiUnes.Gateways.Dbo
             {
                 try
                 {
-                    _db.TB_UNIVERSIDADE_TAG.Add(param);
+                    _db.TB_UNIVERSIDADE_PERFIL.Add(param);
                     _db.SaveChanges();
                     transaction.Commit();
-                    return param.UNT_ID_TAG;
+                    return param.UNP_ID_PERFIL;
                 }
                 catch (Exception e)
                 {
-                    transaction.Rollback();
                     throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
                 }
                 finally
@@ -221,11 +217,11 @@ namespace ApiUnes.Gateways.Dbo
 
 
         /// <summary>
-        /// Apaga uma TB_UNIVERSIDADE_TAG
+        /// Apaga uma TB_UNIVERSIDADE_PERFIL
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static void Delete(string token, Int64 UntIdTag, ModelApiUnes _dbContext = null)
+        public static void Delete(string token, Int32 UNP_ID_PERFIL, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
@@ -234,13 +230,12 @@ namespace ApiUnes.Gateways.Dbo
             {
                 try
                 {
-                    _db.TB_UNIVERSIDADE_TAG.Remove(_db.TB_UNIVERSIDADE_TAG.Where(e => e.UNT_ID_TAG.Equals(UntIdTag)).First());
+                    _db.TB_UNIVERSIDADE_PERFIL.Remove(_db.TB_UNIVERSIDADE_PERFIL.Where(e => e.UNP_ID_PERFIL.Equals(UNP_ID_PERFIL)).First());
                     _db.SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception e)
                 {
-                    transaction.Rollback();
                     throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
                 }
                 finally
@@ -259,11 +254,11 @@ namespace ApiUnes.Gateways.Dbo
 
 
         /// <summary>
-        /// Altera TB_UNIVERSIDADE_TAG
+        /// Altera TB_UNIVERSIDADE_PERFIL
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public static void Update(string token, TB_UNIVERSIDADE_TAG param, ModelApiUnes _dbContext = null)
+        public static void Update(string token, TB_UNIVERSIDADE_PERFIL param, ModelApiUnes _dbContext = null)
         {
             ModelApiUnes _db;
             if (_dbContext == null) _db = new ModelApiUnes();
@@ -272,22 +267,21 @@ namespace ApiUnes.Gateways.Dbo
             {
                 try
                 {
-                    TB_UNIVERSIDADE_TAG value = _db.TB_UNIVERSIDADE_TAG
-                                    .Where(e => e.UNT_ID_TAG.Equals(param.UNT_ID_TAG))
-                                    .First<TB_UNIVERSIDADE_TAG>();
+                    TB_UNIVERSIDADE_PERFIL value = _db.TB_UNIVERSIDADE_PERFIL
+                                    .Where(e => e.UNP_ID_PERFIL.Equals(param.UNP_ID_PERFIL))
+                                    .First<TB_UNIVERSIDADE_PERFIL>();
 
 
+                    if (param.UNP_ID_PERFIL != value.UNP_ID_PERFIL)
+                        value.UNP_ID_PERFIL = param.UNP_ID_PERFIL;
+                    if (param.UNP_TX_NOME != null && param.UNP_TX_NOME != value.UNP_TX_NOME)
+                        value.UNP_TX_NOME = param.UNP_TX_NOME;
 
-                    if (param.UNT_ID_TAG != value.UNT_ID_TAG)
-                        value.UNT_ID_TAG = param.UNT_ID_TAG;
-                    if (param.UNT_TX_NOME != null && param.UNT_TX_NOME != value.UNT_TX_NOME)
-                        value.UNT_TX_NOME = param.UNT_TX_NOME;
                     _db.SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception e)
                 {
-                    transaction.Rollback();
                     throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
                 }
                 finally

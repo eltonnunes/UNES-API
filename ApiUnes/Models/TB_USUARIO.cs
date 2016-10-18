@@ -14,7 +14,6 @@ namespace ApiUnes.Models
             TB_UNIVERSIDADE_ESTATISTICAS = new HashSet<TB_UNIVERSIDADE_ESTATISTICAS>();
             TB_UNIVERSIDADE_TOKEN_API = new HashSet<TB_UNIVERSIDADE_TOKEN_API>();
             TB_USUARIO_ALIAS = new HashSet<TB_USUARIO_ALIAS>();
-            TB_UNIVERSIDADE_PERFIL = new HashSet<TB_UNIVERSIDADE_PERFIL>();
         }
 
         [Key]
@@ -60,6 +59,8 @@ namespace ApiUnes.Models
 
         public DateTime? USU_DT_VALIDADE { get; set; }
 
+        public bool? USU_BL_ACEITAR_TERMO { get; set; }
+
         public virtual TB_PESSOA TB_PESSOA { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -70,8 +71,5 @@ namespace ApiUnes.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TB_USUARIO_ALIAS> TB_USUARIO_ALIAS { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TB_UNIVERSIDADE_PERFIL> TB_UNIVERSIDADE_PERFIL { get; set; }
     }
 }
