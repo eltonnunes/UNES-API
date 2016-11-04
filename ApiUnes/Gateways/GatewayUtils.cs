@@ -100,5 +100,11 @@ namespace ApiUnes.Gateways
             }
         }
 
+        public static void SendError(string error) {
+            var texto = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\App_Data\TemplateError.txt");
+            texto = texto.Replace("{@#$%&}", error);
+            Gateways.GatewayUtils.SendMail(texto, "elton@serveloja.com.br", "SERVELOJA - Log de error |" + DateTime.Now.ToString());
+        }
+
     }
 }

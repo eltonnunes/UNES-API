@@ -247,6 +247,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\TemplateError.txt" />
     <Content Include="App_Data\TemplateRecuperarSenha.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

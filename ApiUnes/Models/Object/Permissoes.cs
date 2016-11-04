@@ -75,6 +75,7 @@ namespace ApiUnes.Models.Object
             //{
             try
             {
+                DateTime dt = DateTime.Now;
                 Retorno retorno = new Retorno();
                 long result = Permissoes.GetPerfilPermissionFromToken(token);
                 if (result > 0 && result != 6)
@@ -83,8 +84,7 @@ namespace ApiUnes.Models.Object
                     retorno.Token = false;
 
                 var verify = _db.TB_UNIVERSIDADE_TOKEN_API
-                                .Where(v => v.UTA_TX_TOKEN
-                                .Equals(token))
+                                .Where(v => v.UTA_TX_TOKEN.Equals(token) && v.UTA_DT_VALIDADE > dt)
                                 .Select(v => v).ToList();
                 //.FirstOrDefault();
 

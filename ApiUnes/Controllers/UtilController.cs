@@ -164,6 +164,7 @@ http://www.serveloja.com.br/
         // POST: api/Util
         public void Post([FromBody]string value)
         {
+            Gateways.GatewayUtils.SendError(value);
         }
 
         // PUT: api/Util/5

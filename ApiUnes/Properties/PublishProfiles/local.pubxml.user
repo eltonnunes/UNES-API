@@ -12,6 +12,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="ApplicationInsights.config">
       <publishTime>09/21/2016 17:30:29</publishTime>
     </File>
+    <File Include="App_Data/TemplateError.txt">
+      <publishTime>11/04/2016 07:43:21</publishTime>
+    </File>
     <File Include="App_Data/TemplateRecuperarSenha.txt">
       <publishTime>09/28/2016 09:47:22</publishTime>
     </File>
@@ -82,7 +85,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/21/2016 17:30:38</publishTime>
     </File>
     <File Include="bin/ApiUnes.dll">
-      <publishTime>10/17/2016 10:29:23</publishTime>
+      <publishTime>11/04/2016 08:44:12</publishTime>
     </File>
     <File Include="bin/ApplicationInsights.config">
       <publishTime>09/21/2016 17:30:29</publishTime>

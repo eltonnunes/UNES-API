@@ -513,6 +513,9 @@ namespace ApiUnes.Gateways.Dbo
             }
             catch (Exception e)
             {
+                string msg = e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message;
+                Gateways.GatewayUtils.SendError(msg);
+
                 throw new Exception(e.InnerException == null ? e.Message : e.InnerException.InnerException == null ? e.InnerException.Message : e.InnerException.InnerException.Message);
             }
         }
